@@ -3,12 +3,11 @@ from schema import User, UserCreate
 from user_store import UserStore # Import the new class
 
 router = APIRouter()
-# Initialize the Store [cite: 105, 106]
+# Initialize the Store 
 store = UserStore("users.txt")
 
 @router.post("/", response_model=User)
 def create_user(user: UserCreate):
-    """Refactored POST using store.load() and store.save()[cite: 112]."""
     users = store.load()
     new_id = max([u['id'] for u in users], default=0) + 1
     new_user = {"id": new_id, "name": user.name, "email": user.email}
@@ -18,7 +17,6 @@ def create_user(user: UserCreate):
 
 @router.get("/", response_model=list[User])
 def get_all_users():
-    """Refactored GET using store.load()[cite: 108]."""
     return store.load()
 
 @router.get("/{id}", response_model=User)
@@ -30,7 +28,6 @@ def get_user_by_id(id: int):
 
 @router.put("/{id}")
 def update_user(id: int, user_update: UserCreate):
-    """Challenge: Implement PUT using store.update_user()[cite: 125, 127]."""
     success = store.update_user(id, user_update.dict())
     if not success:
         raise HTTPException(status_code=404, detail="User not found")
@@ -38,8 +35,8 @@ def update_user(id: int, user_update: UserCreate):
 
 @router.delete("/{id}")
 def delete_user(id: int):
-    """Challenge: Implement DELETE using store.delete_user()[cite: 125, 127]."""
     success = store.delete_user(id)
     if not success:
         raise HTTPException(status_code=404, detail="User not found")
+
     return {"message": "User deleted successfully"}
