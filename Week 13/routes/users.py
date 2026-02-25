@@ -1,12 +1,12 @@
 import json
 import os
 from fastapi import APIRouter, HTTPException
-from schema import User, UserCreate # [cite: 60]
+from schema import User, UserCreate
 
-router = APIRouter() # [cite: 61]
-DB_FILE = "users.txt" # [cite: 37, 65]
+router = APIRouter() 
+DB_FILE = "users.txt" 
 
-# Helper functions for data persistence [cite: 62]
+# Helper functions for data persistence 
 def read_users():
     if not os.path.exists(DB_FILE):
         return []
@@ -25,11 +25,10 @@ def get_next_id(users):
         return 1
     return max(user['id'] for user in users) + 1
 
-# API Endpoints [cite: 57, 63]
+# API Endpoints 
 
 @router.post("/", response_model=User)
 def create_user(user: UserCreate):
-    """POST /users - Create a new user [cite: 57]"""
     users = read_users()
     new_user = {"id": get_next_id(users), "name": user.name, "email": user.email}
     users.append(new_user)
@@ -38,19 +37,15 @@ def create_user(user: UserCreate):
 
 @router.get("/", response_model=list[User])
 def get_all_users():
-    """GET /users - Get all users [cite: 57]"""
     return read_users()
 
-# Specific search route must be BEFORE /{id} [cite: 64, 66]
 @router.get("/search", response_model=list[User])
 def search_users(q: str):
-    """GET /users/search?q= - Search users by name [cite: 57]"""
     users = read_users()
     return [u for u in users if q.lower() in u['name'].lower()]
 
 @router.get("/{id}", response_model=User)
 def get_user_by_id(id: int):
-    """GET /users/{id} - Get user by ID [cite: 57]"""
     users = read_users()
     user = next((u for u in users if u['id'] == id), None)
     if not user:
@@ -59,7 +54,6 @@ def get_user_by_id(id: int):
 
 @router.put("/{id}", response_model=User)
 def update_user(id: int, user_update: UserCreate):
-    """PUT /users/{id} - Update user [cite: 57]"""
     users = read_users()
     for u in users:
         if u['id'] == id:
@@ -71,10 +65,10 @@ def update_user(id: int, user_update: UserCreate):
 
 @router.delete("/{id}")
 def delete_user(id: int):
-    """DELETE /users/{id} - Delete user [cite: 57]"""
     users = read_users()
     updated_users = [u for u in users if u['id'] != id]
     if len(updated_users) == len(users):
         raise HTTPException(status_code=404, detail="User not found")
     write_users(updated_users)
+
     return {"message": "User deleted successfully"}
