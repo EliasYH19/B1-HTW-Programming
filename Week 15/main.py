@@ -13,9 +13,10 @@ app.include_router(users.router, prefix="/users", tags=["Users"])
 
 @app.get("/")
 def health_check():
-    return {"status": "healthy", "message": "API is running"} [cite: 54]
+    return {"status": "healthy", "message": "API is running"} 
 
 @app.get("/health")
 def detailed_health():
 
     return {"status": "healthy", "details": "All systems operational"}
+
