@@ -2,12 +2,12 @@ import sqlite3
 
 class UserStore:
     def __init__(self, db_path):
-        """Constructor accepts db_path and initializes the database[cite: 155, 163]."""
+     #Constructor accepts db_path and initializes the database
         self.db_path = db_path
         self.init_db()
 
     def init_db(self):
-        """Creates the users table if it does not already exist."""
+        #Creates the users table if it does not already exist
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('''
@@ -21,7 +21,7 @@ class UserStore:
         conn.close()
 
     def load(self):
-        """Returns a list of all user dictionaries from the database[cite: 159, 165]."""
+        # Returns a list of all user dictionaries from the database
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row  # Allows accessing columns by name
         cursor = conn.cursor()
@@ -32,7 +32,7 @@ class UserStore:
         return users
 
     def save(self, user_data):
-        """Inserts a new user into the database[cite: 160, 166]."""
+        # Inserts a new user into the database
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute(
@@ -43,7 +43,7 @@ class UserStore:
         conn.close()
 
     def find_by_id(self, user_id):
-        """Returns a specific user dict or None using an SQL query[cite: 161, 167]."""
+        # Returns a specific user dict or None using an SQL queryy
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
@@ -53,7 +53,6 @@ class UserStore:
         return dict(row) if row else None
 
     def update_user(self, user_id, updated_data):
-        """Updates a user by ID using an SQL UPDATE statement[cite: 193, 195]."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute(
@@ -66,11 +65,12 @@ class UserStore:
         return success
 
     def delete_user(self, user_id):
-        """Removes a user by ID using an SQL DELETE statement[cite: 194, 196]."""
+        # Removes a user by ID using an SQL DELETE statement
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
         success = cursor.rowcount > 0
         conn.commit()
         conn.close()
+
         return success
